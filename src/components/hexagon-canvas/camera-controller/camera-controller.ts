@@ -15,6 +15,7 @@ export default class CameraController {
     this.offset = { x: 0, y: 0 };
     this.setEdgeScrollHandling();
     this.setScrollHandling();
+    this.setArrowKeyHandling();
     this.hexagonGrid.setRenderHook('cameraHook', () => {
       this.hexagonGrid.pan(this.offset);
     })
@@ -60,4 +61,40 @@ export default class CameraController {
       this.offset = { x: ratioX / 15, y: ratioY / 15 };
     });
   }
+
+  setArrowKeyHandling():void {
+    document.addEventListener('keydown', (event: KeyboardEvent) => {
+      switch (event.key) {
+        case 'ArrowUp':
+          this.offset.y = 0.1;
+          break;
+        case 'ArrowDown':
+          this.offset.y = -0.1;
+          break;
+        case 'ArrowLeft':
+          this.offset.x = 0.1;
+          break;
+        case 'ArrowRight':
+          this.offset.x = -0.1;
+          break;
+      }
+    });
+  
+    document.addEventListener('keyup', (event: KeyboardEvent) => {
+      switch (event.key) {
+        case 'ArrowUp':
+          this.offset.y = 0;
+          break;
+        case 'ArrowDown':
+          this.offset.y = 0;
+          break;
+        case 'ArrowLeft':
+          this.offset.x = 0;
+          break;
+        case 'ArrowRight':
+          this.offset.x = 0;
+          break;
+      }
+    });
+  }  
 }
