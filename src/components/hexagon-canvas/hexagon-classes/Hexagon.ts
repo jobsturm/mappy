@@ -93,14 +93,15 @@ export default class Hexagon {
     this.fillStyle = mapColor;
   }
   setHover() {
-    console.log('hover in');
-    this.strokeStyle = '#FFF';
+    this.strokeStyle = 'red';
     this.lineWidth = 8;
   }
   removeHover() {
-    console.log('hover out');
     this.strokeStyle = '#000';
     this.lineWidth = 8;
+  }
+  handleClick() {
+    console.log(this);
   }
   render(ctx: CanvasRenderingContext2D) {
     let p = new Path2D(this.getSvgPathFromPoints(this.drawPoints));

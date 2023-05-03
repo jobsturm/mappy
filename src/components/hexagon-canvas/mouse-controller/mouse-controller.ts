@@ -36,26 +36,37 @@ export default class MouseController {
   canvas: HTMLCanvasElement;
   hexagonGrid: HexagonGrid;
   oldHex:Hexagon | null = null;
+  activeHex:Hexagon | null = null;
   
   constructor(canvas: HTMLCanvasElement, hexagonGrid: HexagonGrid) {
     this.canvas = canvas;
     this.hexagonGrid = hexagonGrid;
     this.oldHex = null;
+    this.activeHex = null;
     this.setMouseMoveHandling();
+    this.setMouseClick();
   }
 
   setMouseMoveHandling():void {
     this.canvas.addEventListener('mousemove', (event: MouseEvent) => {
-      const hex = findHexagonContainingPoint(this.hexagonGrid.hexagons, { x: event.x, y: event.y })
-      if (hex) {
-        if (this.oldHex !== hex) {
-          hex.setHover();
+      this.activeHex = findHexagonContainingPoint(this.hexagonGrid.hexagons, { x: event.x, y: event.y })
+      if (this.activeHex) {
+        if (this.oldHex !== this.activeHex) {
+          this.activeHex.setHover();
         }
-        if (this.oldHex && this.oldHex !== hex) {
+        if (this.oldHex && this.oldHex !== this.activeHex) {
           this.oldHex.removeHover();
         }
-        this.oldHex = hex as Hexagon;
+        this.oldHex = this.activeHex;
       }
     });
+  }
+
+  setMouseClick():void {
+    this.canvas.addEventListener('click', () => {
+      if (this.activeHex) {
+        this.activeHex.handleClick();
+      }
+    })
   }
 }
