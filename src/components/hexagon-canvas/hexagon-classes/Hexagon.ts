@@ -20,14 +20,17 @@ export default class Hexagon {
   height: number;
   width: number;
   fillStyle: string;
+  strokeStyle: string;
+  lineWidth: number;
 
   constructor(hexagonCoordinates: HexagonCoordinates, offset: Point) {
     this.coordinates = hexagonCoordinates;
     this.width = 0;
     this.height = 0;
 
-    const fillStyles = ['green', 'yellow', 'blue']; 
-    this.fillStyle = fillStyles[Math.floor(Math.random() * 3)];
+    this.fillStyle = 'white';
+    this.strokeStyle = '#000000';
+    this.lineWidth = 8;
 
     this.center = this.getHexagonCenter(this.coordinates);
     this.points = this.getHexagonPoints(this.center);
@@ -86,15 +89,25 @@ export default class Hexagon {
   setBaseCoordinates(baseCoordinates: Point) {
     const mapRow = map[baseCoordinates.y + this.coordinates.row];
     if (!mapRow) { this.fillStyle = 'white'; return }
-    const mapColor = mapRow[baseCoordinates.x + this.coordinates.column];
+    const mapColor = mapRow[baseCoordinates.x + this.coordinates.column] || 'white';
     this.fillStyle = mapColor;
+  }
+  setHover() {
+    console.log('hover in');
+    this.strokeStyle = '#FFF';
+    this.lineWidth = 8;
+  }
+  removeHover() {
+    console.log('hover out');
+    this.strokeStyle = '#000';
+    this.lineWidth = 8;
   }
   render(ctx: CanvasRenderingContext2D) {
     let p = new Path2D(this.getSvgPathFromPoints(this.drawPoints));
-    ctx.strokeStyle = "#000000";  
-    ctx.lineWidth = 8;
-    ctx.fillStyle = this.fillStyle || 'white';
+    ctx.strokeStyle = this.strokeStyle;  
+    ctx.lineWidth = this.lineWidth;
+    ctx.fillStyle = this.fillStyle;
     ctx.stroke(p);
-    ctx.fill(p, 'evenodd');
+    ctx.fill(p);
   }
 }
