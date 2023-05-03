@@ -1,3 +1,5 @@
+import { map } from '../../../api/generateMap';
+
 export const HEX_DIAMETER = 60;
 
 export interface HexagonCoordinates {
@@ -17,11 +19,16 @@ export default class Hexagon {
   drawPoints: Point[];
   height: number;
   width: number;
+  fillStyle: string;
 
   constructor(hexagonCoordinates: HexagonCoordinates, offset: Point) {
     this.coordinates = hexagonCoordinates;
     this.width = 0;
     this.height = 0;
+
+    const fillStyles = ['green', 'yellow', 'blue']; 
+    this.fillStyle = fillStyles[Math.floor(Math.random() * 3)];
+
     this.center = this.getHexagonCenter(this.coordinates);
     this.points = this.getHexagonPoints(this.center);
     this.drawPoints = structuredClone(this.points);
@@ -66,13 +73,28 @@ export default class Hexagon {
       this.drawPoints[i].y = this.points[i].y + offsetY;
     }
   }
+  getSvgPathFromPoints(points:Point[]):string {
+    const path = `M${points[0].x},${points[0].y} `
+      + `L${points[1].x},${points[1].y} `
+      + `L${points[2].x},${points[2].y} `
+      + `L${points[3].x},${points[3].y} `
+      + `L${points[4].x},${points[4].y} `
+      + `L${points[5].x},${points[5].y} `
+      + `Z`;
+    return path;
+  }
+  setBaseCoordinates(baseCoordinates: Point) {
+    const mapRow = map[baseCoordinates.y + this.coordinates.row];
+    if (!mapRow) { this.fillStyle = 'white'; return }
+    const mapColor = mapRow[baseCoordinates.x + this.coordinates.column];
+    this.fillStyle = mapColor;
+  }
   render(ctx: CanvasRenderingContext2D) {
-    ctx.moveTo(this.drawPoints[0].x, this.drawPoints[0].y);
-    this.drawPoints.forEach((point, i) => {
-      ctx.lineTo(point.x, point.y);
-    });
-    ctx.lineTo(this.drawPoints[0].x, this.drawPoints[0].y);
-    ctx.fillStyle = "green";
-    ctx.fill();
+    let p = new Path2D(this.getSvgPathFromPoints(this.drawPoints));
+    ctx.strokeStyle = "#000000";  
+    ctx.lineWidth = 8;
+    ctx.fillStyle = this.fillStyle || 'white';
+    ctx.stroke(p);
+    ctx.fill(p, 'evenodd');
   }
 }

@@ -17,12 +17,14 @@ export default class HexagonGrid {
   hexagons: Hexagons;
   ctx: CanvasRenderingContext2D | null;
   offset: Point;
+  coordinates: Point;
   renderHooks: { [key: string]: Function };
 
   constructor(width: number, height: number) {
     this.dimensions = { width, height };
     this.ctx = null;
     this.offset = { x: -2, y: -2 };
+    this.coordinates = { x: 0, y: 0 };
 
     this.grid = this.getHexagonGrid();
     this.hexagons = this.generateHexagons();
@@ -56,20 +58,25 @@ export default class HexagonGrid {
   pan(offset: Point):void {
     this.offset.x += offset.x;
     this.offset.y += offset.y;
-    if (this.offset.x > -1 || this.offset.x < -4) this.offset.x = -2.5;
-    if (this.offset.y > -1 || this.offset.y < -3) this.offset.y = -2;
+    if (this.offset.x > -1 || this.offset.x < -4) {
+      if (this.offset.x > -1) this.coordinates.x -= 2;
+      if (this.offset.x < -4) this.coordinates.x += 2;
+      this.offset.x = -2.5;
+    }
+    if (this.offset.y > -1 || this.offset.y < -3) {
+      if (this.offset.y > -1) this.coordinates.y -= 1;
+      if (this.offset.y < -3) this.coordinates.y += 1;
+      this.offset.y = -2;
+    }
   }
   draw():void {
     const { ctx } = this;
     if (!ctx) return;
-    ctx.beginPath();
-    ctx.strokeStyle = "#000";  
-    ctx.lineWidth = 4;
     this.hexagons.forEach(hexagon => {
       hexagon.shiftHexagonPoints(this.offset);
+      hexagon.setBaseCoordinates(this.coordinates);
       hexagon.render(ctx);
     });
-    ctx.stroke();
   }
   executeRenderHooks():void {
     Object.values(this.renderHooks).forEach(hook => hook());
