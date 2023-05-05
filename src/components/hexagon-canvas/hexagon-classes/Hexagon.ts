@@ -1,6 +1,7 @@
-import { map } from '../../../api/generateMap';
+import { baseMap as map } from '../../../api/generateMap';
+import MouseEvents from '../../../base-classes/MouseEvents';
 
-export const HEX_DIAMETER = 60;
+export const HEX_DIAMETER = 20;
 
 export interface HexagonCoordinates {
   column: number
@@ -12,9 +13,10 @@ export interface Point {
   y: number;
 }
 
-export default class Hexagon {
-  coordinates: HexagonCoordinates;
-  center: Point;
+export default class Hexagon extends MouseEvents {
+  readonly coordinates: HexagonCoordinates;
+  readonly center: Point;
+  baseCoordinates: Point;
   points: Point[];
   drawPoints: Point[];
   height: number;
@@ -24,19 +26,28 @@ export default class Hexagon {
   lineWidth: number;
 
   constructor(hexagonCoordinates: HexagonCoordinates, offset: Point) {
+    super();
     this.coordinates = hexagonCoordinates;
     this.width = 0;
     this.height = 0;
 
+    // Styling
     this.fillStyle = 'white';
     this.strokeStyle = '#000000';
-    this.lineWidth = 8;
+    this.lineWidth = 2;
 
     this.center = this.getHexagonCenter(this.coordinates);
+    this.baseCoordinates = { x: 0, y: 0 };
     this.points = this.getHexagonPoints(this.center);
     this.drawPoints = structuredClone(this.points);
     // we want to shift everything 1 to the left, so we can slide the whole grid
     this.shiftHexagonPoints(offset);
+
+    this.mouseClickObservable.attach({
+      update(hex) {
+        console.log(hex);
+      }
+    });
   }
 
   getHexagonCenter({ column, row }: HexagonCoordinates): Point {
@@ -87,21 +98,16 @@ export default class Hexagon {
     return path;
   }
   setBaseCoordinates(baseCoordinates: Point) {
+    this.baseCoordinates = baseCoordinates;
     const mapRow = map[baseCoordinates.y + this.coordinates.row];
     if (!mapRow) { this.fillStyle = 'white'; return }
     const mapColor = mapRow[baseCoordinates.x + this.coordinates.column] || 'white';
     this.fillStyle = mapColor;
   }
-  setHover() {
-    this.strokeStyle = 'red';
-    this.lineWidth = 8;
-  }
-  removeHover() {
-    this.strokeStyle = '#000';
-    this.lineWidth = 8;
-  }
-  handleClick() {
-    console.log(this);
+  getMapCoordinates():Point {
+    const y = this.baseCoordinates.y + this.coordinates.row;
+    const x = this.baseCoordinates.x + this.coordinates.column;
+    return { x, y };
   }
   render(ctx: CanvasRenderingContext2D) {
     let p = new Path2D(this.getSvgPathFromPoints(this.drawPoints));
