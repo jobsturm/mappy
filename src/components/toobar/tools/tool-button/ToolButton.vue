@@ -1,11 +1,28 @@
 <script lang="ts" setup>
+  import { useToolComposable } from '../tool-composable/ToolComposable';  
+  import type { MassObservables } from '@/components/hexagon-canvas/hexagon-classes/HexagonGrid';
+  import type { Observer } from '@/base-classes/Observable';
+  import type Hexagon from '@/components/hexagon-canvas/hexagon-classes/Hexagon';
+  import { toRefs, watch } from 'vue';
+
   const props = defineProps<{
-    isActive: boolean
+    isActive: boolean,
+    observables: MassObservables,
+    observer: Observer<Hexagon>,
+    observableKeys: Array<keyof MassObservables>
   }>();
+
+  const { isActive } = toRefs(props);
+  
+  const { toggle } = useToolComposable(props.observables, props.observer, props.observableKeys);
+  watch(isActive, toggle);
 </script>
 
 <template>
-  <button class="tool-button" :class="{ 'tool-button--is-active': props.isActive }">
+  <button
+    class="tool-button"
+    :class="{ 'tool-button--is-active': isActive }"
+  >
     <slot></slot>
   </button>
 </template>
