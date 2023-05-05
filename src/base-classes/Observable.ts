@@ -1,6 +1,11 @@
 // Define a type for the event data
 export type EventData = any;
 
+// Define an interface for the observer
+export interface Observer<T> {
+  update(eventData: T): void;
+}
+
 // Define a class for the Observable
 export default class Observable<T = EventData> {
   private observers: Observer<T>[] = [];
@@ -24,9 +29,4 @@ export default class Observable<T = EventData> {
       observer.update(eventData);
     });
   }
-}
-
-// Define an interface for the observer
-export interface Observer<T> {
-  update(eventData: T): void;
 }

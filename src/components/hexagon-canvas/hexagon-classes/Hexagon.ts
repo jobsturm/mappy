@@ -42,12 +42,6 @@ export default class Hexagon extends MouseEvents {
     this.drawPoints = structuredClone(this.points);
     // we want to shift everything 1 to the left, so we can slide the whole grid
     this.shiftHexagonPoints(offset);
-
-    this.mouseClickObservable.attach({
-      update(hex) {
-        console.log(hex);
-      }
-    });
   }
 
   getHexagonCenter({ column, row }: HexagonCoordinates): Point {

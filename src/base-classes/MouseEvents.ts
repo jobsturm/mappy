@@ -1,9 +1,6 @@
 import Observable from './Observable';
 
-export default class MouseEvents {
-  mouseDown: boolean;
-  mouseClickedIn: boolean;
-  hover: boolean;
+export type MouseEventObservables = {
   mouseInObservable: Observable;
   mouseOutObservable: Observable;
   mouseDownObservable: Observable;
@@ -11,53 +8,62 @@ export default class MouseEvents {
   mouseClickedInObservable: Observable;
   mouseClickedOutObservable: Observable;
   mouseClickObservable: Observable;
+}
+
+export default class MouseEvents {
+  mouseDown: boolean;
+  mouseClickedIn: boolean;
+  hover: boolean;
+  observables: MouseEventObservables;
 
   constructor() {
     this.mouseDown = false;
     this.mouseClickedIn = false;
     this.hover = false;
 
-    this.mouseInObservable = new Observable();
-    this.mouseOutObservable = new Observable();
-    this.mouseDownObservable = new Observable();
-    this.mouseUpObservable = new Observable();
-    this.mouseClickedInObservable = new Observable();
-    this.mouseClickedOutObservable = new Observable();
-    this.mouseClickObservable = new Observable();
+    this.observables = {
+      mouseInObservable: new Observable(),
+      mouseOutObservable: new Observable(),
+      mouseDownObservable: new Observable(),
+      mouseUpObservable: new Observable(),
+      mouseClickedInObservable: new Observable(),
+      mouseClickedOutObservable: new Observable(),
+      mouseClickObservable: new Observable(),
+    }
   }
   
   handleMouseIn() {
     this.hover = true;
-    this.mouseInObservable.notify(this);
+    this.observables.mouseInObservable.notify(this);
   }
   
   handleMouseOut() {
     this.hover = false;
-    this.mouseOutObservable.notify(this);
+    this.observables.mouseOutObservable.notify(this);
   }
   
   handleMouseDown() {
     this.mouseDown = true;
-    this.mouseDownObservable.notify(this);
+    this.observables.mouseDownObservable.notify(this);
   }
   
   handleMouseUp() {
     this.mouseDown = false;
-    this.mouseUpObservable.notify(this);
+    this.observables.mouseUpObservable.notify(this);
   }
   
   handleMouseClickedIn() {
     this.mouseClickedIn = true;
-    this.mouseClickedInObservable.notify(this);
+    this.observables.mouseClickedInObservable.notify(this);
   }
   
   handleMouseClickedOut() {
     this.mouseClickedIn = false;
-    this.mouseClickedOutObservable.notify(this);
+    this.observables.mouseClickedOutObservable.notify(this);
   }
   
   handleClick() {
-    this.mouseClickObservable.notify(this);
+    this.observables.mouseClickObservable.notify(this);
     // const { x, y } = this.getMapCoordinates();
     // map[y] = map[y] || [];
     // map[y][x] = 'green';

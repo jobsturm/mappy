@@ -1,5 +1,7 @@
 import Hexagon, { HEX_DIAMETER } from './Hexagon';
 import type { Point } from './Hexagon';
+import type { MouseEventObservables } from '@/base-classes/MouseEvents';
+import type { EventData, Observer } from '@/base-classes/Observable';
 
 export interface Dimensions {
   width: number,
@@ -9,7 +11,33 @@ export interface Grid {
   rows: number,
   columns: number,
 }
-type Hexagons = Hexagon[];  
+type Hexagons = Hexagon[];
+
+// To make it easier to controll the Observers of the hexagons
+class GridNodesObservableController {
+  hexagons: Hexagons;
+  observerName: keyof MouseEventObservables;
+
+  constructor(hexagons: Hexagons, observerName: keyof MouseEventObservables) {
+    this.hexagons = hexagons;
+    this.observerName = observerName;
+  }
+
+  attach(observer: Observer<EventData>) {
+    this.hexagons.forEach(hexagon => {
+      hexagon.observables[this.observerName].attach(observer);
+    })
+  }
+  detach(observer: Observer<EventData>) {
+    this.hexagons.forEach(hexagon => {
+      hexagon.observables[this.observerName].detach(observer);
+    })
+  }
+}
+
+type massObservables = {
+  [Property in keyof MouseEventObservables]: GridNodesObservableController
+}
 
 export default class HexagonGrid {
   dimensions: Dimensions;
@@ -19,16 +47,25 @@ export default class HexagonGrid {
   offset: Point;
   coordinates: Point;
   renderHooks: { [key: string]: Function };
+  gridNodeObservables: massObservables;
 
   constructor(width: number, height: number) {
     this.dimensions = { width, height };
     this.ctx = null;
     this.offset = { x: -2, y: -2 };
     this.coordinates = { x: 0, y: 0 };
-
     this.grid = this.getHexagonGrid();
     this.hexagons = this.generateHexagons();
     this.renderHooks = {};
+    this.gridNodeObservables = {
+      mouseInObservable: new GridNodesObservableController(this.hexagons, 'mouseInObservable'),
+      mouseOutObservable: new GridNodesObservableController(this.hexagons, 'mouseOutObservable'),
+      mouseDownObservable: new GridNodesObservableController(this.hexagons, 'mouseDownObservable'),
+      mouseUpObservable: new GridNodesObservableController(this.hexagons, 'mouseUpObservable'),
+      mouseClickedInObservable: new GridNodesObservableController(this.hexagons, 'mouseClickedInObservable'),
+      mouseClickedOutObservable: new GridNodesObservableController(this.hexagons, 'mouseClickedOutObservable'),
+      mouseClickObservable: new GridNodesObservableController(this.hexagons, 'mouseClickObservable'),
+    }
   }
 
   setCanvas(canvas: HTMLCanvasElement):void {
@@ -53,6 +90,7 @@ export default class HexagonGrid {
         hexagons.push(new Hexagon({ column: i, row: j }, this.offset));
       }
     }
+    console.log(hexagons[0]);
     return hexagons;
   }
   pan(offset: Point):void {
