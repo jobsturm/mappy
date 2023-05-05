@@ -104,7 +104,7 @@ export default class Hexagon extends MouseEvents {
     return { x, y };
   }
   render(ctx: CanvasRenderingContext2D) {
-    let p = new Path2D(this.getSvgPathFromPoints(this.drawPoints));
+    const p = new Path2D(this.getSvgPathFromPoints(this.drawPoints));
     ctx.strokeStyle = this.strokeStyle;  
     ctx.lineWidth = this.lineWidth;
     ctx.fillStyle = this.fillStyle;

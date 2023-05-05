@@ -35,7 +35,7 @@ class GridNodesObservableController {
   }
 }
 
-type massObservables = {
+export type MassObservables = {
   [Property in keyof MouseEventObservables]: GridNodesObservableController
 }
 
@@ -47,7 +47,7 @@ export default class HexagonGrid {
   offset: Point;
   coordinates: Point;
   renderHooks: { [key: string]: Function };
-  gridNodeObservables: massObservables;
+  gridNodeObservables: MassObservables;
 
   constructor(width: number, height: number) {
     this.dimensions = { width, height };

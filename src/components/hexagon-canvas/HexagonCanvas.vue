@@ -14,11 +14,6 @@
     new CameraController(canvas.value, hexagonGrid, { width: innerWidth, height: innerHeight });
     new MouseController(canvas.value, hexagonGrid);
     hexagonGrid.setCanvas(canvas.value);
-    hexagonGrid.gridNodeObservables.mouseClickObservable.attach({
-      update: (test) => {
-        console.log('hi', test);
-      },
-    });
   })
 </script>
 
