@@ -1,6 +1,7 @@
 <script lang="ts" setup>
   import type { MassObservables } from '@/components/hexagon-canvas/hexagon-classes/HexagonGrid';
   import PaintBrush from './tools/painbrush/PaintBrush.vue';
+  import eraser from './tools/eraser/Eraser.vue';
 
   const props = defineProps<{
     observables: MassObservables
@@ -10,6 +11,7 @@
 <template>
   <div class="toolbar">
     <paint-brush :observables="props.observables"/>
+    <eraser :observables="props.observables"/>
   </div>  
 </template>
 

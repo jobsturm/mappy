@@ -90,7 +90,6 @@ export default class HexagonGrid {
         hexagons.push(new Hexagon({ column: i, row: j }, this.offset));
       }
     }
-    console.log(hexagons[0]);
     return hexagons;
   }
   pan(offset: Point):void {

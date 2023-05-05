@@ -13,29 +13,29 @@
 
   let brushActivated = ref(false);
 
-  const paintbrushObserver: Observer<Hexagon> = {
+  const eraserObserver: Observer<Hexagon> = {
     update(hexagon: Hexagon) {
       const { x, y } = hexagon.getMapCoordinates();
       map[y] = map[y] || [];
-      map[y][x] = 'green';
-      hexagon.fillStyle = 'green';
+      map[y][x] = 'white';
+      hexagon.fillStyle = 'white';
     }
   }
 
   const toggleBrush = () => {
     brushActivated.value = !brushActivated.value;
     if (brushActivated.value) {
-      observables.value.mouseClickedInObservable.attach(paintbrushObserver);
-      observables.value.mouseDownObservable.attach(paintbrushObserver);
+      observables.value.mouseClickedInObservable.attach(eraserObserver);
+      observables.value.mouseDownObservable.attach(eraserObserver);
     } else {
-      observables.value.mouseClickedInObservable.detach(paintbrushObserver);
-      observables.value.mouseDownObservable.detach(paintbrushObserver);
+      observables.value.mouseClickedInObservable.detach(eraserObserver);
+      observables.value.mouseDownObservable.detach(eraserObserver);
     }
   }
 </script>
 
 <template>
   <tool-button @click="toggleBrush" :is-active="brushActivated">
-    <img src="@/assets/icons/paintbrush-icon.png"/>
+    <img src="@/assets/icons/eraser-icon.png"/>
   </tool-button>
 </template>
