@@ -2,6 +2,7 @@ import { baseMap as map } from '../../../api/generateMap';
 import MouseEvents from '../../../base-classes/MouseEvents';
 
 export const HEX_DIAMETER = 20;
+export const HEX_DEFAULT_COLOR = '#0065C4';
 
 export interface HexagonCoordinates {
   column: number
@@ -32,7 +33,7 @@ export default class Hexagon extends MouseEvents {
     this.height = 0;
 
     // Styling
-    this.fillStyle = 'white';
+    this.fillStyle = HEX_DEFAULT_COLOR;
     this.strokeStyle = '#000000';
     this.lineWidth = 2;
 
@@ -94,8 +95,8 @@ export default class Hexagon extends MouseEvents {
   setBaseCoordinates(baseCoordinates: Point) {
     this.baseCoordinates = baseCoordinates;
     const mapRow = map[baseCoordinates.y + this.coordinates.row];
-    if (!mapRow) { this.fillStyle = 'white'; return }
-    const mapColor = mapRow[baseCoordinates.x + this.coordinates.column] || 'white';
+    if (!mapRow) { this.fillStyle = HEX_DEFAULT_COLOR; return }
+    const mapColor = mapRow[baseCoordinates.x + this.coordinates.column] || HEX_DEFAULT_COLOR;
     this.fillStyle = mapColor;
   }
   getMapCoordinates():Point {

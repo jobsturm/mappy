@@ -1,3 +1,3 @@
 import Brush from './base/Brush';
 
-export default Brush('blue');
+export default Brush('green');
