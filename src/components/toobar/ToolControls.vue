@@ -14,8 +14,6 @@
       :is="configurable.inputComponent"
       :observer="observer"
     />
-    <!-- <input v-if="observer.configurables.color.public" type="text" :value="observer.configurables.color.value"/>
-    <input v-if="observer.configurables.brushRadius.public" type="number" :value="observer.configurables.brushRadius.value"/> -->
   </div>
 </template>
 

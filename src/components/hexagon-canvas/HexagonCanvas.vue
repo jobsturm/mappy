@@ -3,7 +3,7 @@
   import HexagonGrid from './hexagon-classes/HexagonGrid';
   import CameraController from './camera-controller/camera-controller';
   import MouseController from './mouse-controller/mouse-controller';
-  import Toolbar from '../toobar/Toolbar.vue';
+  import Toolbar from '../toobar/Tools.vue';
 
   const hexagonGrid = new HexagonGrid(window.innerWidth, window.innerHeight);
   const canvas = ref(null);
@@ -29,12 +29,4 @@
     width: 100%;
     height: 100%;
   }
-  .main__toolbar {
-    position: absolute;
-    bottom: 0px;
-    left: 50%;
-    bottom: 24px;
-    transform: translateX(-50%);
-  }
-
 </style>

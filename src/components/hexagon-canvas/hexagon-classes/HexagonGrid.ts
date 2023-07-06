@@ -2,7 +2,8 @@ import Hexagon, { HEX_DIAMETER } from './Hexagon';
 import type { Point } from './Hexagon';
 import type { MouseEventObservables } from '@/base-classes/MouseEvents';
 import type { EventData, Observer } from '@/base-classes/Observable';
-
+import FpsCounter from "../fps-counter/fps-counter";
+  
 export interface Dimensions {
   width: number,
   height: number,
@@ -48,6 +49,7 @@ export default class HexagonGrid {
   coordinates: Point;
   renderHooks: { [key: string]: Function };
   gridNodeObservables: MassObservables;
+  fpsCounter: FpsCounter;
 
   constructor(width: number, height: number) {
     this.dimensions = { width, height };
@@ -57,6 +59,7 @@ export default class HexagonGrid {
     this.grid = this.getHexagonGrid();
     this.hexagons = this.generateHexagons();
     this.renderHooks = {};
+    this.fpsCounter = new FpsCounter();
     this.gridNodeObservables = {
       mouseInObservable: new GridNodesObservableController(this.hexagons, 'mouseInObservable'),
       mouseOutObservable: new GridNodesObservableController(this.hexagons, 'mouseOutObservable'),
@@ -118,13 +121,26 @@ export default class HexagonGrid {
   executeRenderHooks():void {
     Object.values(this.renderHooks).forEach(hook => hook());
   }
+  showFps() {
+    const { ctx } = this;
+    if (!ctx) return;
+
+    ctx.fillStyle = "black";
+    ctx.font = "16px Arial";
+    const fps = this.fpsCounter.getFps();
+    if (fps !== 0) {
+      ctx.fillText("FPS: " + fps, 10, 20);
+    }
+  }
   render():void {
     const { ctx } = this;
     if (ctx) {
       ctx.clearRect(0, 0, this.dimensions.width, this.dimensions.height);
       this.executeRenderHooks();
       this.draw();
-    }
+      this.fpsCounter.countFrame();
+      this.showFps();
+    } 
     requestAnimationFrame(this.render.bind(this));
   }
 }

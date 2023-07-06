@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import { computed, reactive, ref } from 'vue';
+  import { computed, reactive, ref, shallowRef } from 'vue';
   import type { MassObservables } from '@/components/hexagon-canvas/hexagon-classes/HexagonGrid';
   import ToolButton from './tool-button/ToolButton.vue';
   import PaintBrushObserver from './tools/PaintBrush';
@@ -20,7 +20,7 @@
     'eraser': EraserObserver,
   });
 
-  const activeButton = ref();
+  const activeButton = shallowRef();
   const activeObserver = computed(() => observerMap[activeButton.value]);
 </script>
 
@@ -56,7 +56,7 @@
     overflow: hidden;
     position: absolute;
     bottom: 0px;
-    right: 0px;
+    right: 10px;
     padding: 16px 16px 16px 0;
     display: flex;
     flex-direction: column-reverse;

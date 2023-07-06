@@ -4,6 +4,7 @@ import type Hexagon from "@/components/hexagon-canvas/hexagon-classes/Hexagon";
 import { HEX_DEFAULT_COLOR, type Point } from "@/components/hexagon-canvas/hexagon-classes/Hexagon";
 import BrushColorInput from "./components/BrushColorInput.vue";
 import BrushRadiusInput from "./components/BrushRadiusInput.vue";
+import { markRaw } from 'vue';
 
 interface BrushHexagon extends Point {
   color: string;
@@ -97,8 +98,8 @@ export default class BrushObserver implements Observer<Hexagon> {
 
   constructor(color:string) {
     this.configurables = {
-      color: { value: color, isPublic: true, inputComponent: BrushColorInput },
-      brushRadius: { value: 8, isPublic: true, inputComponent: BrushRadiusInput },
+      color: { value: color, isPublic: true, inputComponent: markRaw(BrushColorInput) },
+      brushRadius: { value: 8, isPublic: true, inputComponent: markRaw(BrushRadiusInput) },
     }
   }
   setConfigurable<K extends keyof BrushConfigurables>(key: K, value: BrushConfigurables[K]['value']) {
