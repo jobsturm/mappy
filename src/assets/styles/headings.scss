@@ -1,0 +1,56 @@
+/* H1 */
+.heading-1 {
+  font-family: var(--font-serif);
+  font-size: var(--text-5xl);
+  font-weight: var(--font-bold);
+  line-height: var(--leading-10);
+}
+
+/* H2 */
+.heading-2 {
+  font-family: var(--font-serif);
+  font-size: var(--text-4xl);
+  font-weight: var(--font-bold);
+  line-height: var(--leading-9);
+}
+
+/* H3 */
+.heading-3 {
+  font-family: var(--font-serif);
+  font-size: var(--text-3xl);
+  font-weight: var(--font-bold);
+  line-height: var(--leading-8);
+}
+
+/* H4 */
+.heading-4 {
+  font-family: var(--font-serif);
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  line-height: var(--leading-7);
+}
+
+/* H5 */
+.heading-5 {
+  font-family: var(--font-sans);
+  font-size: var(--text-xl);
+  font-weight: var(--font-semibold);
+  line-height: var(--leading-6);
+}
+
+/* H6 */
+.heading-6 {
+  font-family: var(--font-sans);
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  line-height: var(--leading-5);
+}
+
+/* SUB */
+.subtitle {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: var(--font-very-bold);
+  line-height: var(--leading-5);
+  color: var(--gray-600);
+}

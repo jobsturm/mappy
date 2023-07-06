@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import { useToolComposable } from '../tool-composable/ToolComposable';  
+  import { useToolButtonComposable } from './ToolButtonComposable';  
   import type { MassObservables } from '@/components/hexagon-canvas/hexagon-classes/HexagonGrid';
   import type { Observer } from '@/base-classes/Observable';
   import type Hexagon from '@/components/hexagon-canvas/hexagon-classes/Hexagon';
@@ -14,7 +14,7 @@
 
   const { isActive } = toRefs(props);
   
-  const { toggle } = useToolComposable(props.observables, props.observer, props.observableKeys);
+  const { toggle } = useToolButtonComposable(props.observables, props.observer, props.observableKeys);
   watch(isActive, toggle);
 </script>
 
@@ -29,20 +29,31 @@
 
 <style lang="css" scoped>
   .tool-button {
-    width: 80px;
-    height: 80px;
+    width: 50px;
+    height: 50px;
     border: 0px;
     border-radius: 8px;
     background: transparent;
     box-sizing: border-box;
-    border: 1px solid rgba(0,0,0,0);
   }
-  .tool-button:hover {
-    background-color: white;
-    border: 1px solid blue;
+  .tool-button::after {
+    content: '';
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    height: 4px;
+    opacity: 0;
+    border-top-right-radius: 4px;;
+    border-top-left-radius: 4px;;
   }
-  .tool-button--is-active {
-    border: 1px solid red;
+  .tool-button:hover::after {
+    opacity: 1;
+    background-color: rebeccapurple;
+  }
+  .tool-button--is-active::after {
+    opacity: 1;
+    background-color: rebeccapurple;
   }
 </style>
 

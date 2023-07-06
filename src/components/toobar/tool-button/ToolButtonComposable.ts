@@ -3,7 +3,7 @@ import type { MassObservables } from '@/components/hexagon-canvas/hexagon-classe
 import type { Observer } from '@/base-classes/Observable';
 import type Hexagon from '@/components/hexagon-canvas/hexagon-classes/Hexagon';
 
-export function useToolComposable(observables: MassObservables, observer: Observer<Hexagon>, observableKeys: Array<keyof MassObservables>): {
+export function useToolButtonComposable(observables: MassObservables, observer: Observer<Hexagon>, observableKeys: Array<keyof MassObservables>): {
   brushActivated: Ref<boolean>;
   toggle: () => void;
 } {

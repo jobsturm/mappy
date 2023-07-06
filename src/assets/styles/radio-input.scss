@@ -1,0 +1,14 @@
+/* Define a class for the radio buttons */
+.radio-input {
+  appearance: none;
+  border: 1px solid var(--input-border-color);
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  margin-right: var(--spacing-4);
+}
+
+/* Style the checked state */
+.radio-input:checked {
+  background-color: var(--primary-color);
+}

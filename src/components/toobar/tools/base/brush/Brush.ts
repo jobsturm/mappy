@@ -2,6 +2,8 @@ import { baseMap as map } from "@/api/generateMap";
 import type { Observer } from "@/base-classes/Observable";
 import type Hexagon from "@/components/hexagon-canvas/hexagon-classes/Hexagon";
 import { HEX_DEFAULT_COLOR, type Point } from "@/components/hexagon-canvas/hexagon-classes/Hexagon";
+import BrushColorInput from "./components/BrushColorInput.vue";
+import BrushRadiusInput from "./components/BrushRadiusInput.vue";
 
 interface BrushHexagon extends Point {
   color: string;
@@ -85,20 +87,33 @@ function getCoordinatesToPaint(hexagon: Hexagon, color: string, brushRadius: num
   });
 }
 
+export interface BrushConfigurables {
+  color: { value: string, isPublic: boolean, inputComponent: typeof BrushColorInput };
+  brushRadius: { value: number, isPublic: boolean, inputComponent: typeof BrushRadiusInput };
+}
+
 export default class BrushObserver implements Observer<Hexagon> {
-  color: string;
-  brushRadius: number;
+  configurables: BrushConfigurables;
 
   constructor(color:string) {
-    this.color = color;
-    this.brushRadius = 8;
+    this.configurables = {
+      color: { value: color, isPublic: true, inputComponent: BrushColorInput },
+      brushRadius: { value: 8, isPublic: true, inputComponent: BrushRadiusInput },
+    }
+  }
+  setConfigurable<K extends keyof BrushConfigurables>(key: K, value: BrushConfigurables[K]['value']) {
+    this.configurables[key].value = value;
   }
   setColor(x: number, y: number, color: string) {
     map[y] = map[y] || [];
     map[y][x] = color;
   }
   async update(hexagon: Hexagon) {
-    const { coordinates, resetCoordinates } = await getCoordinatesToPaint(hexagon, this.color, this.brushRadius);
+    const { coordinates, resetCoordinates } = await getCoordinatesToPaint(
+      hexagon,
+      this.configurables.color.value,
+      this.configurables.brushRadius.value,
+    );
 
     coordinates.forEach(point => {
       this.setColor(point.x, point.y, point.color);
