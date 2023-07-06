@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import { computed, reactive, ref, shallowRef } from 'vue';
+  import { computed, reactive, shallowRef } from 'vue';
   import type { MassObservables } from '@/components/hexagon-canvas/hexagon-classes/HexagonGrid';
   import ToolButton from './tool-button/ToolButton.vue';
   import PaintBrushObserver from './tools/PaintBrush';

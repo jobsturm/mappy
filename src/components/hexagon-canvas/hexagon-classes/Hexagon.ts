@@ -1,8 +1,9 @@
 import { baseMap as map } from '../../../api/generateMap';
 import MouseEvents from '../../../base-classes/MouseEvents';
 
-export const HEX_DIAMETER = 20;
+export const HEX_DIAMETER = 10;
 export const HEX_DEFAULT_COLOR = '#0065C4';
+export const HEX_LINE_WIDTH = 1;
 
 export interface HexagonCoordinates {
   column: number
@@ -25,6 +26,7 @@ export default class Hexagon extends MouseEvents {
   fillStyle: string;
   strokeStyle: string;
   lineWidth: number;
+  // path: Path2D;
 
   constructor(hexagonCoordinates: HexagonCoordinates, offset: Point) {
     super();
@@ -35,7 +37,7 @@ export default class Hexagon extends MouseEvents {
     // Styling
     this.fillStyle = HEX_DEFAULT_COLOR;
     this.strokeStyle = '#000000';
-    this.lineWidth = 2;
+    this.lineWidth = HEX_LINE_WIDTH;
 
     this.center = this.getHexagonCenter(this.coordinates);
     this.baseCoordinates = { x: 0, y: 0 };
@@ -43,6 +45,9 @@ export default class Hexagon extends MouseEvents {
     this.drawPoints = structuredClone(this.points);
     // we want to shift everything 1 to the left, so we can slide the whole grid
     this.shiftHexagonPoints(offset);
+
+    // Pathing
+    // this.path = new Path2D(this.getSvgPathFromPoints(this.drawPoints));
   }
 
   getHexagonCenter({ column, row }: HexagonCoordinates): Point {
@@ -75,8 +80,8 @@ export default class Hexagon extends MouseEvents {
   }
   shiftHexagonPoints(offset: Point) {
     // offset is 0 - 1 range.
-    const offsetX = offset.x * this.width;
-    const offsetY = offset.y * this.height;
+    const offsetX = Math.round(offset.x * this.width);
+    const offsetY = Math.round(offset.y * this.height);
     for (let i = 0; i < this.points.length; i++) {
       this.drawPoints[i].x = this.points[i].x + offsetX;
       this.drawPoints[i].y = this.points[i].y + offsetY;
@@ -105,11 +110,31 @@ export default class Hexagon extends MouseEvents {
     return { x, y };
   }
   render(ctx: CanvasRenderingContext2D) {
-    const p = new Path2D(this.getSvgPathFromPoints(this.drawPoints));
+    // const p = new Path2D(this.path);
     ctx.strokeStyle = this.strokeStyle;  
     ctx.lineWidth = this.lineWidth;
     ctx.fillStyle = this.fillStyle;
-    ctx.stroke(p);
-    ctx.fill(p);
+
+    // Start a new path
+    ctx.beginPath();
+
+    // Move to the first point
+    const x = this.drawPoints[0].x;
+    const y = this.drawPoints[0].y;
+    ctx.moveTo(x, y);
+
+    // Iterate over the remaining points and draw lines
+    for (let i = 1; i < this.drawPoints.length; i++) {
+      const x = this.drawPoints[i].x;
+      const y = this.drawPoints[i].y;
+      ctx.lineTo(x, y);
+    }
+
+    // Close the path
+    ctx.closePath();
+
+    // Render the path
+    ctx.stroke();
+    ctx.fill();
   }
 }

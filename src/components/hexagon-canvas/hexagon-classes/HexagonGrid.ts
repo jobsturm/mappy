@@ -36,6 +36,9 @@ class GridNodesObservableController {
   }
 }
 
+const executionTimeHistory:Array<number> = [];
+const average = (arr:Array<number>) => arr.reduce( ( p, c ) => p + c, 0 ) / arr.length;
+
 export type MassObservables = {
   [Property in keyof MouseEventObservables]: GridNodesObservableController
 }
@@ -49,6 +52,7 @@ export default class HexagonGrid {
   coordinates: Point;
   renderHooks: { [key: string]: Function };
   gridNodeObservables: MassObservables;
+  paused: boolean;
   fpsCounter: FpsCounter;
 
   constructor(width: number, height: number) {
@@ -60,6 +64,7 @@ export default class HexagonGrid {
     this.hexagons = this.generateHexagons();
     this.renderHooks = {};
     this.fpsCounter = new FpsCounter();
+    this.paused = false;
     this.gridNodeObservables = {
       mouseInObservable: new GridNodesObservableController(this.hexagons, 'mouseInObservable'),
       mouseOutObservable: new GridNodesObservableController(this.hexagons, 'mouseOutObservable'),
@@ -71,8 +76,14 @@ export default class HexagonGrid {
     }
   }
 
+  pause():void {
+    this.paused = true;
+  }
+  unpause():void {
+    this.paused = false;
+  }
   setCanvas(canvas: HTMLCanvasElement):void {
-    this.ctx = canvas.getContext('2d');
+    this.ctx = canvas.getContext('2d', { alpha: false });
     this.render();
   }
   setRenderHook(key: string, hook: Function) {
@@ -109,14 +120,23 @@ export default class HexagonGrid {
       this.offset.y = -2;
     }
   }
-  draw():void {
+  async draw() {
     const { ctx } = this;
     if (!ctx) return;
-    this.hexagons.forEach(hexagon => {
+
+    const startTime = performance.now();
+
+    await Promise.all(this.hexagons.map(hexagon => {
       hexagon.shiftHexagonPoints(this.offset);
       hexagon.setBaseCoordinates(this.coordinates);
       hexagon.render(ctx);
-    });
+    }));
+
+    const endTime = performance.now();
+    const executionTime = endTime - startTime;
+    executionTimeHistory.push(executionTime);
+
+    console.log(`Average: ${average(executionTimeHistory)} ms`);
   }
   executeRenderHooks():void {
     Object.values(this.renderHooks).forEach(hook => hook());
@@ -125,7 +145,7 @@ export default class HexagonGrid {
     const { ctx } = this;
     if (!ctx) return;
 
-    ctx.fillStyle = "black";
+    ctx.fillStyle = "white";
     ctx.font = "16px Arial";
     const fps = this.fpsCounter.getFps();
     if (fps !== 0) {
@@ -134,7 +154,7 @@ export default class HexagonGrid {
   }
   render():void {
     const { ctx } = this;
-    if (ctx) {
+    if (ctx && !this.paused) {
       ctx.clearRect(0, 0, this.dimensions.width, this.dimensions.height);
       this.executeRenderHooks();
       this.draw();

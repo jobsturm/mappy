@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { onMounted, ref } from 'vue'
+  import { onMounted, onUnmounted, ref } from 'vue'
   import HexagonGrid from './hexagon-classes/HexagonGrid';
   import CameraController from './camera-controller/camera-controller';
   import MouseController from './mouse-controller/mouse-controller';
@@ -11,10 +11,14 @@
 
   onMounted(() => {
     if (!canvas.value) return;
+    hexagonGrid.unpause();
     new CameraController(canvas.value, hexagonGrid, { width: innerWidth, height: innerHeight });
     new MouseController(canvas.value, hexagonGrid);
     hexagonGrid.setCanvas(canvas.value);
-  })
+  });
+  onUnmounted(() => {
+    hexagonGrid.pause();
+  });
 </script>
 
 <template>

@@ -64,8 +64,5 @@ export default class MouseEvents {
   
   handleClick() {
     this.observables.mouseClickObservable.notify(this);
-    // const { x, y } = this.getMapCoordinates();
-    // map[y] = map[y] || [];
-    // map[y][x] = 'green';
   }
 }
