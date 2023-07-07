@@ -3,7 +3,7 @@ import MouseEvents from '../../../base-classes/MouseEvents';
 
 export const HEX_DIAMETER = 10;
 export const HEX_DEFAULT_COLOR = '#0065C4';
-export const HEX_LINE_WIDTH = 1;
+export const HEX_LINE_WIDTH = 2;
 
 export interface HexagonCoordinates {
   column: number
@@ -23,10 +23,9 @@ export default class Hexagon extends MouseEvents {
   drawPoints: Point[];
   height: number;
   width: number;
-  fillStyle: string;
-  strokeStyle: string;
-  lineWidth: number;
-  // path: Path2D;
+  fillStyle: CanvasFillStrokeStyles['fillStyle'];
+  strokeStyle: CanvasFillStrokeStyles['strokeStyle'];
+  lineWidth: CanvasPathDrawingStyles['lineWidth'];
 
   constructor(hexagonCoordinates: HexagonCoordinates, offset: Point) {
     super();
@@ -87,16 +86,6 @@ export default class Hexagon extends MouseEvents {
       this.drawPoints[i].y = this.points[i].y + offsetY;
     }
   }
-  getSvgPathFromPoints(points:Point[]):string {
-    const path = `M${points[0].x},${points[0].y} `
-      + `L${points[1].x},${points[1].y} `
-      + `L${points[2].x},${points[2].y} `
-      + `L${points[3].x},${points[3].y} `
-      + `L${points[4].x},${points[4].y} `
-      + `L${points[5].x},${points[5].y} `
-      + `Z`;
-    return path;
-  }
   setBaseCoordinates(baseCoordinates: Point) {
     this.baseCoordinates = baseCoordinates;
     const mapRow = map[baseCoordinates.y + this.coordinates.row];
@@ -110,10 +99,8 @@ export default class Hexagon extends MouseEvents {
     return { x, y };
   }
   render(ctx: CanvasRenderingContext2D) {
-    // const p = new Path2D(this.path);
     ctx.strokeStyle = this.strokeStyle;  
     ctx.lineWidth = this.lineWidth;
-    ctx.fillStyle = this.fillStyle;
 
     // Start a new path
     ctx.beginPath();
@@ -134,7 +121,10 @@ export default class Hexagon extends MouseEvents {
     ctx.closePath();
 
     // Render the path
-    ctx.stroke();
-    ctx.fill();
+    if (this.fillStyle !== HEX_DEFAULT_COLOR) {
+      ctx.stroke();
+      ctx.fillStyle = this.fillStyle;
+      ctx.fill();
+    }
   }
 }

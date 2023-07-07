@@ -1,4 +1,4 @@
-import Hexagon, { HEX_DIAMETER } from './Hexagon';
+import Hexagon, { HEX_DEFAULT_COLOR, HEX_DIAMETER } from './Hexagon';
 import type { Point } from './Hexagon';
 import type { MouseEventObservables } from '@/base-classes/MouseEvents';
 import type { EventData, Observer } from '@/base-classes/Observable';
@@ -126,6 +126,9 @@ export default class HexagonGrid {
 
     const startTime = performance.now();
 
+    // Start a new path
+    ctx.beginPath();
+
     await Promise.all(this.hexagons.map(hexagon => {
       hexagon.shiftHexagonPoints(this.offset);
       hexagon.setBaseCoordinates(this.coordinates);
@@ -156,6 +159,9 @@ export default class HexagonGrid {
     const { ctx } = this;
     if (ctx && !this.paused) {
       ctx.clearRect(0, 0, this.dimensions.width, this.dimensions.height);
+      ctx.fillStyle = HEX_DEFAULT_COLOR;
+      ctx.fillRect(0, 0, this.dimensions.width, this.dimensions.height);
+
       this.executeRenderHooks();
       this.draw();
       this.fpsCounter.countFrame();
